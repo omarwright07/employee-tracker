@@ -1,163 +1,81 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../../db/connection');
+const db = require('../db/connection');
 
 // View All Departments
 router.get('/departments', (req, res) => {
-    const sql = `SELECT candidates.*, parties.name 
-    AS party_name 
-    FROM candidates 
-    LEFT JOIN parties 
-    ON candidates.party_id = parties.id`;
+    const sql = `SELECT * FROM departments;`;
 
     db.query(sql, (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        res.json({
-            message: 'success',
-            date: rows
-        });
+        if (err) throw err;
+        console.table(rows);
     });
 });
 
 // View All Roles
-router.get('/candidates', (req, res) => {
-    const sql = `SELECT candidates.*, parties.name 
-    AS party_name 
-    FROM candidates 
-    LEFT JOIN parties 
-    ON candidates.party_id = parties.id`;
+router.get('/roles', (req, res) => {
+    const sql = `SELECT * FROM roles;`;
 
     db.query(sql, (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        res.json({
-            message: 'success',
-            date: rows
-        });
+        if (err) throw err;
+        console.table(rows);
     });
 });
 
 // View All Employees
-router.get('/candidates', (req, res) => {
-    const sql = `SELECT candidates.*, parties.name 
-    AS party_name 
-    FROM candidates 
-    LEFT JOIN parties 
-    ON candidates.party_id = parties.id`;
+router.get('/employees', (req, res) => {
+    const sql = `SELECT * FROM employees;`;
 
     db.query(sql, (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        res.json({
-            message: 'success',
-            date: rows
-        });
+        if (err) throw err;
+        console.table(rows);
     });
 });
 
 // Add a Department
-router.post('/candidate', ({ body }, res) => {
-    const errors = inputCheck(body, 'first_name', 'last_name', 'industry_connected');
-    if (errors) {
-        res.status(400).json({ error: errors });
-        return;
-    }
+router.post('/department', ({ body }, res) => {
+    const sql = `INSERT INTO departments (name) VALUES (?)`;
+    const params = [body.name];
 
-    const sql = `INSERT INTO candidates (first_name, last_name, industry_connected) VALUES (?,?,?)`;
-    const params = [body.first_name, body.last_name, body.industry_connected];
-
-    db.query(sql, params, (err, result) => {
-        if (err) {
-            res.status(400).json({ error: err.message });
-            return;
-        }
-        res.json({
-            message: 'success',
-            data: body
-        });
+    db.query(sql, params, (err, rows) => {
+        if (err) throw err;
+        console.table(rows);
     });
 });
 
 // Add a Role
-router.post('/candidate', ({ body }, res) => {
-    const errors = inputCheck(body, 'first_name', 'last_name', 'industry_connected');
-    if (errors) {
-        res.status(400).json({ error: errors });
-        return;
-    }
-
-    const sql = `INSERT INTO candidates (first_name, last_name, industry_connected) VALUES (?,?,?)`;
+router.post('/role', ({ body }, res) => {
+    const sql = `INSERT INTO roles (first_name, last_name, industry_connected) VALUES (?,?,?)`;
     const params = [body.first_name, body.last_name, body.industry_connected];
 
-    db.query(sql, params, (err, result) => {
-        if (err) {
-            res.status(400).json({ error: err.message });
-            return;
-        }
-        res.json({
-            message: 'success',
-            data: body
-        });
+    db.query(sql, params, (err, rows) => {
+        if (err) throw err;
+        console.table(rows);
     });
 });
 
 
 // Add an Employee
-router.post('/candidate', ({ body }, res) => {
-    const errors = inputCheck(body, 'first_name', 'last_name', 'industry_connected');
-    if (errors) {
-        res.status(400).json({ error: errors });
-        return;
-    }
-
+router.post('/employee', ({ body }, res) => {
     const sql = `INSERT INTO candidates (first_name, last_name, industry_connected) VALUES (?,?,?)`;
     const params = [body.first_name, body.last_name, body.industry_connected];
 
-    db.query(sql, params, (err, result) => {
-        if (err) {
-            res.status(400).json({ error: err.message });
-            return;
-        }
-        res.json({
-            message: 'success',
-            data: body
-        });
+    db.query(sql, params, (err, rows) => {
+        if (err) throw err;
+        console.table(rows);
     });
 });
 
 // Update an Employee Role
-router.put('/candidate/:id', (req, res) => {
-    const errors = inputCheck(req.body, 'party_id');
-
-    if (errors) {
-        res.status(400).json({ error: errors });
-        return;
-    }
-
-    const sql = `UPDATE candidates SET party_id = ? 
+router.put('/employee/:id', (req, res) => {
+    const sql = `UPDATE cemployees SET role = ? 
                  WHERE id = ?`;
-    const params = [req.body.party_id, req.params.id];
-    db.query(sql, params, (err, result) => {
-        if (err) {
-            res.status(400).json({ error: err.message });
-            // check if a record was found
-        } else if (!result.affectedRows) {
-            res.json({
-                message: 'Candidate not found'
-            });
-        } else {
-            res.json({
-                message: 'success',
-                data: req.body,
-                changes: result.affectedRows
-            });
-        }
+    const params = [req.body.role, req.params.id];
+    
+    db.query(sql, params, (err, rows) => {
+        if (err) throw err;
+        console.table(rows);
     });
 });
+
+module.exports = router;
