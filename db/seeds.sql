@@ -3,13 +3,13 @@ VALUES
   ('Regular'),
   ('Leads'),
   ('Management');
-INSERT INTO roles (name, salary, department_id)
+INSERT INTO roles (name, salary, department)
 VALUES
   ('Intern', 40000, 1),
   ('Engineer', 75000, 1),
   ('Lead', 100000, 2),
   ('Manager', 125000, 3);
-INSERT INTO employees (first_name, last_name, role_id, manager_id)
+INSERT INTO employees (first_name, last_name, role, manager)
 VALUES
   ('Ronald', 'Firbank', NULL, 1),
   ('Virginia', 'Woolf', 1, 1),
