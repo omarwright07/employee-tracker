@@ -1,22 +1,15 @@
-const express = require('express');
-const app = express();
 const db = require('./db/connection.js');
-
-const PORT = process.env.PORT || 3001;
-const Tracker = require('./lib/Tracker.js');
-
-// Express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+const { promptUser } = require('./lib/employeeTracker.js');
 
 // Connect to the Database
 db.connect(err => {
     if (err) throw err;
     console.log('Database connected.');
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-    })
+    console.log('');
+    // Call function to initialize app
+    promptUser();
 });
+
 
 // db.query(`SELECT * FROM departments`, (err, rows) => {
 //     console.table(rows);
@@ -34,6 +27,3 @@ db.connect(err => {
 // db.query(`SELECT employees.id, employees.first_name, employees.last_name, roles.name AS role_name, employees.manager_id FROM employees INNER JOIN roles ON employees.role_id = roles.id;`, (err, rows) => {
 //     console.table(rows);
 // });
-
-// Call function to initialize app
-new Tracker().initializeTracker();
